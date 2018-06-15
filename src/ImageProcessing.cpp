@@ -6,10 +6,8 @@
 
 void imageProcessingFun(const QString& progName, QImage* const outImgs, const QImage* const inImgs, const QVector<double>& params) 
 {
-	int X_SIZE = inImgs->width();
-	int Y_SIZE = inImgs->height();
-	
-	/* NOTE: Calculate output image resolution and construct output image object */
+	int inputXSize = inImgs->width();
+	int inputYSize = inImgs->height();
 
 	if(progName == "Sample and hold") 
 	{	
@@ -17,16 +15,16 @@ void imageProcessingFun(const QString& progName, QImage* const outImgs, const QI
 		/* Vertical scale factor is params[0] */
 		/* Horizontal scale factor is params[1] */
 
-		/* TO DO: Calculate output image resolution and construct output image object */
-		int temp_x = X_SIZE * params[1];
-		int temp_y = Y_SIZE * params[0];
-		int X_SIZE_NEW = temp_x + (N - (temp_x % N));
-		int Y_SIZE_NEW = temp_y + (N - (temp_y % N));
+		/* Calculate output image resolution and construct output image object */
+		int tempXSize = inputXSize * params[1];
+		int tempYSIze = inputYSize * params[0];
+		int outputXSize = tempXSize + (N - (tempXSize % N));
+		int outputYSize = tempYSIze + (N - (tempYSIze % N));
 
-		new (outImgs) QImage(X_SIZE_NEW, Y_SIZE_NEW, inImgs->format());
+		new (outImgs) QImage(outputXSize, outputYSize, inImgs->format());
 
-		/* TO DO: Perform Sample and hold interpolation  */
-		sampleAndHold(inImgs->bits(), X_SIZE, Y_SIZE, outImgs->bits(), X_SIZE_NEW, Y_SIZE_NEW);
+		/* Perform Sample and hold interpolation  */
+		sampleAndHold(inImgs->bits(), inputXSize, inputYSize, outImgs->bits(), outputXSize, outputYSize);
 
 	}
 	else if (progName == "Bilinear") 
