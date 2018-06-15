@@ -34,8 +34,16 @@ void imageProcessingFun(const QString& progName, QImage* const outImgs, const QI
 		/* Horizontal scale factor is params[1] */
 
 		/* TO DO: Calculate output image resolution and construct output image object */
+		int tempXSize = inputXSize * params[1];
+		int tempYSIze = inputYSize * params[0];
+		int outputXSize = tempXSize + (N - (tempXSize % N));
+		int outputYSize = tempYSIze + (N - (tempYSIze % N));
+
+		new (outImgs) QImage(outputXSize, outputYSize, inImgs->format());
 
 		/* TO DO: Perform Bilinear interpolation  */
+		bilinearInterpolate(inImgs->bits(), inputXSize, inputYSize, outImgs->bits(), outputXSize, outputYSize);
+
 	}
 	else if(progName == "Rotation") 
 	{	

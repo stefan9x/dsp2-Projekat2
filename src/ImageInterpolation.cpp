@@ -32,7 +32,48 @@ void sampleAndHold(const uchar input[], int xSize, int ySize, uchar output[], in
 
 void bilinearInterpolate(const uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
 {
-	/* TO DO */
+	const double horizontalScalingFactor = (double) newXSize / xSize;
+	const double verticalScalingFactor = (double) newYSize / ySize;
+
+	for (int x = 0; x < newXSize; x++)
+	{
+		for (int y = 0; y < newYSize; y++)
+		{
+			double a = x / horizontalScalingFactor - floor(x / horizontalScalingFactor);
+			double b = y / verticalScalingFactor - floor(y / verticalScalingFactor);
+
+			int m = x / horizontalScalingFactor;
+			int n = y / verticalScalingFactor;
+
+			int m2 = m + 1;
+			int n2 = n + 1;
+
+			if (m2 == xSize) {
+				m2 = m;
+			}
+
+			if (n2 == ySize) {
+				n2 = n;
+			}
+			
+			output[y * 3 * newXSize + x * 3] = (1 - a) * (1 - b) * input[n * xSize * 3 + m * 3] +
+											   a * (1 - b) * input[n * xSize * 3 + m2 * 3] +
+											   (1 - a) * b * input[n2 * xSize * 3 + m * 3] +
+												a * b * input[n2 * xSize * 3 + m2 * 3];
+
+			output[y * 3 * newXSize + x * 3 + 1] = (1 - a) * (1 - b) * input[n * xSize * 3 + m * 3 + 1] +
+												   a * (1 - b) * input[n * xSize * 3 + m2 * 3 + 1] +
+												   (1 - a) * b * input[n2 * xSize * 3 + m * 3 + 1] +
+												    a * b * input[n2 * xSize * 3 + m2 * 3 + 1];
+
+			output[y * 3 * newXSize + x * 3 + 2] = (1 - a) * (1 - b) * input[n * xSize * 3 + m * 3 + 2] +
+												   a * (1 - b) * input[n * xSize * 3 + m2 * 3 + 2] +
+											       (1 - a) * b * input[n2 * xSize * 3 + m * 3 + 2] +
+												    a * b * input[n2 * xSize * 3 + m2 * 3 + 2];
+
+		}
+	}
+
 }
 
 void bicubicInterpolate(uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
