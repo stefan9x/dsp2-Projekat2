@@ -1,14 +1,14 @@
 
 #include "ImageProcessing.h"
 #include "ImageInterpolation.h"
-
+#define N 4
 #include <QDebug>
 
 void imageProcessingFun(const QString& progName, QImage* const outImgs, const QImage* const inImgs, const QVector<double>& params) 
 {
 	int X_SIZE = inImgs->width();
 	int Y_SIZE = inImgs->height();
-
+	
 	/* NOTE: Calculate output image resolution and construct output image object */
 
 	if(progName == "Sample and hold") 
@@ -18,9 +18,15 @@ void imageProcessingFun(const QString& progName, QImage* const outImgs, const QI
 		/* Horizontal scale factor is params[1] */
 
 		/* TO DO: Calculate output image resolution and construct output image object */
+		int temp_x = X_SIZE * params[1];
+		int temp_y = Y_SIZE * params[0];
+		int X_SIZE_NEW = temp_x + (N - (temp_x % N));
+		int Y_SIZE_NEW = temp_y + (N - (temp_y % N));
+
+		new (outImgs) QImage(X_SIZE_NEW, Y_SIZE_NEW, inImgs->format());
 
 		/* TO DO: Perform Sample and hold interpolation  */
-
+		sampleAndHold(inImgs->bits(), X_SIZE, Y_SIZE, outImgs->bits(), X_SIZE_NEW, Y_SIZE_NEW);
 
 	}
 	else if (progName == "Bilinear") 
