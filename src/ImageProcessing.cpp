@@ -70,9 +70,10 @@ void imageProcessingFun(const QString& progName, QImage* const outImgs, const QI
 		/* Center of rotation coordinates are (XSIZE/2, YSIZE/2) */
 
 		/* TO DO: Construct output image object */
+		new (outImgs) QImage(inputXSize, inputYSize, inImgs->format());
 
 		/* TO DO: Perform image rotation */
-	
+		imageRotate(inImgs->bits(), inputXSize, inputYSize, outImgs->bits(), inputXSize/2, inputYSize/2, params[0]);
 	}
 	else if (progName == "Rotation Bilinear") 
 	{
