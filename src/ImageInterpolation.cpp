@@ -214,5 +214,11 @@ void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int 
 
 void imageRotateBilinear(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
 {
-	/* TO DO */
+	uchar *tempBuff = new uchar [xSize * ySize * 3];
+
+	imageRotate(input, xSize, ySize, tempBuff, m, n, angle);
+	bilinearInterpolate(tempBuff, xSize, ySize, output, xSize, ySize);
+
+	delete[]tempBuff;
+
 }
