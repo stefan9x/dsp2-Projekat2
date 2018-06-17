@@ -45,6 +45,24 @@ void imageProcessingFun(const QString& progName, QImage* const outImgs, const QI
 		bilinearInterpolate(inImgs->bits(), inputXSize, inputYSize, outImgs->bits(), outputXSize, outputYSize);
 
 	}
+	else if (progName == "Bicubic")
+	{
+		/* Input image data in RGB format can be obtained with inImgs->bits() */
+		/* Rotation angle in degrees is params[0]*/
+		/* Center of rotation coordinates are (XSIZE/2, YSIZE/2) */
+
+		/* TO DO: Construct output image object */
+		int tempXSize = inputXSize * params[1];
+		int tempYSIze = inputYSize * params[0];
+		int outputXSize = tempXSize + (N - (tempXSize % N));
+		int outputYSize = tempYSIze + (N - (tempYSIze % N));
+
+		new (outImgs) QImage(outputXSize, outputYSize, inImgs->format());
+
+		/* TO DO: Perform Bicubic interpolation */
+		bicubicInterpolate(inImgs->bits(), inputXSize, inputYSize, outImgs->bits(), outputXSize, outputYSize);
+
+	}
 	else if(progName == "Rotation") 
 	{	
 		/* Input image data in RGB format can be obtained with inImgs->bits() */

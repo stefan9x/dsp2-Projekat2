@@ -28,10 +28,6 @@ c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\debug\moc_itemwidget.obj
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\debug\moc_inimgitem.obj
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\debug\qrc_imagedsp.obj
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\qrc_imagedsp.cpp
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_inimgitem.h
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_mainwindow.h
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_paramitem.h
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_qcustomplot.cpp
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_universalitemdelegate.cpp
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_tablemodel.cpp
@@ -42,8 +38,10 @@ c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\gene
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_inimgitem.cpp
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_imageviewer.cpp
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\debug\moc_hoveredittriggerlistview.cpp
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\x64\debug\imagedsp.ilk
-c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\x64\debug\imagedsp.exe
+c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\qrc_imagedsp.cpp
+c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_inimgitem.h
+c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_mainwindow.h
+c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\generatedfiles\ui_paramitem.h
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\x64\debug\imagedsp.pdb
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\debug\imagedsp.tlog\cl.command.1.tlog
 c:\users\stefa\documents\vi-sem\dsp\projekat\build\vs2015\imagedsp\imagedsp\x64\debug\imagedsp.tlog\cl.read.1.tlog

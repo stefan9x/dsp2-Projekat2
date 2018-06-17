@@ -1,15 +1,17 @@
 #include "ImageInterpolation.h"
 #include "ColorSpaces.h"
+#include "ImageFilter.h"
 #include <math.h>
+#include <thread>
 
 void sampleAndHold(const uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
 {
-	const double horizontalScalingFactor = (double)newXSize / xSize;
-	const double verticalScalingFactor = (double)newYSize / ySize;
+	double horizontalScalingFactor = (double)newXSize / xSize;
+	double verticalScalingFactor = (double)newYSize / ySize;
 
-	for (int x = 0; x < newXSize; x++)
+	for (int y = 0; y < newYSize; y++)
 	{
-		for (int y = 0; y < newYSize; y++)
+		for (int x = 0; x < newXSize; x++)
 		{
 
 			int closestX = (x - 1) / horizontalScalingFactor + 1;
@@ -32,12 +34,12 @@ void sampleAndHold(const uchar input[], int xSize, int ySize, uchar output[], in
 
 void bilinearInterpolate(const uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
 {
-	const double horizontalScalingFactor = (double) newXSize / xSize;
-	const double verticalScalingFactor = (double) newYSize / ySize;
+	double horizontalScalingFactor = (double) newXSize / xSize;
+	double verticalScalingFactor = (double) newYSize / ySize;
 
-	for (int x = 0; x < newXSize; x++)
+	for (int y = 0; y < newYSize; y++)
 	{
-		for (int y = 0; y < newYSize; y++)
+		for (int x = 0; x < newXSize; x++)
 		{
 			double a = x / horizontalScalingFactor - floor(x / horizontalScalingFactor);
 			double b = y / verticalScalingFactor - floor(y / verticalScalingFactor);
@@ -46,11 +48,12 @@ void bilinearInterpolate(const uchar input[], int xSize, int ySize, uchar output
 			int n = y / verticalScalingFactor;
 
 			int m2 = m + 1;
-			int n2 = n + 1;
 
 			if (m2 == xSize) {
 				m2 = m;
 			}
+
+			int n2 = n + 1;
 
 			if (n2 == ySize) {
 				n2 = n;
@@ -76,9 +79,110 @@ void bilinearInterpolate(const uchar input[], int xSize, int ySize, uchar output
 
 }
 
-void bicubicInterpolate(uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
+double calculateW(double value) {
+
+	double absValue = abs(value);
+	if (absValue < 1) {
+		return (1.5 * (absValue * absValue * absValue)) - (2.5 * (absValue * absValue)) + 1;
+	}
+	else if ((absValue >= 1) && (absValue < 2)) {
+		return (-0.5 * (absValue * absValue * absValue)) + (2.5 * (absValue * absValue)) - (4 * absValue) + 2;
+	}
+	else
+	{
+		return 0;
+	}
+};
+
+uchar cubicInterpolate(uchar pixels[], double value) {
+	double w[4];
+	int ret = 0;
+
+	w[0] = calculateW(value + 1);
+	w[1] = calculateW(value);
+	w[2] = calculateW(1 - value);
+	w[3] = calculateW(2 - value);
+
+	for (int i = 0; i < 4; i++) {
+		ret += pixels[i] * w[i];
+	}
+
+	if (ret > 255) {
+		ret = 255;
+	}
+	else  if (ret < 0) {
+		ret = 0;
+	}
+
+	return (uchar)ret;
+}
+
+void bicubicWork(uchar colorBuff[], uchar output[], int xSize, int ySize, int newXSize, int newYSize, double horizontalScalingFactor, double verticalScalingFactor, int color) {
+	
+	uchar *horizontalPixels = new uchar[4];
+	uchar *verticalPixels = new uchar[4];
+
+	uchar *extendedColorBuff = new uchar[(xSize + 4) * (ySize + 4)];
+	extendBorders(colorBuff, xSize, ySize, extendedColorBuff, 2);
+
+	for (int y = 0; y < newYSize; y++) {
+		for (int x = 0; x < newXSize; x++) {
+			double b = x / horizontalScalingFactor - floor(x / horizontalScalingFactor);
+			double a = y / verticalScalingFactor - floor(y / verticalScalingFactor);
+
+			int bicubicY = y / verticalScalingFactor;
+			int bicubicX = x / horizontalScalingFactor;
+
+			int v = 0;
+
+			for (int h = bicubicY - 1; h < bicubicY + 3; h++, v++) {
+
+				horizontalPixels[0] = extendedColorBuff[h * (xSize + 4) + bicubicX - 1];
+				horizontalPixels[1] = extendedColorBuff[h * (xSize + 4) + bicubicX];
+				horizontalPixels[2] = extendedColorBuff[h * (xSize + 4) + bicubicX + 1];
+				horizontalPixels[3] = extendedColorBuff[h * (xSize + 4) + bicubicX + 2];
+
+				verticalPixels[v] = cubicInterpolate(horizontalPixels, b);
+
+			}
+
+			output[y * 3 * newXSize + x * 3 + color] = cubicInterpolate(verticalPixels, a);
+
+		}
+	}
+
+	delete[]horizontalPixels;
+	delete[]verticalPixels;
+	delete[]extendedColorBuff;
+}
+
+void bicubicInterpolate(const uchar input[], int xSize, int ySize, uchar output[], int newXSize, int newYSize)
 {
-	/* TO DO */
+	uchar *rBuff = new uchar[xSize * ySize];
+	uchar *gBuff = new uchar[xSize * ySize];
+	uchar *bBuff = new uchar[xSize * ySize];
+
+	for (int y = 0; y < ySize; y++) {
+		for (int x = 0; x < xSize; x++) {
+			rBuff[y * xSize + x] = input[y * xSize * 3 + x * 3];
+			gBuff[y * xSize + x] = input[y * xSize * 3 + x * 3 + 1];
+			bBuff[y * xSize + x] = input[y * xSize * 3 + x * 3 + 2];
+		}
+	}
+
+	double horizontalScalingFactor = (double)newXSize / xSize;
+	double vericalScalingFactor = (double)newYSize / ySize;
+
+	std::thread redThread(bicubicWork, rBuff, output, xSize, ySize, newXSize, newYSize, horizontalScalingFactor, vericalScalingFactor, 0);
+	std::thread greenThread(bicubicWork, gBuff, output, xSize, ySize, newXSize, newYSize, horizontalScalingFactor, vericalScalingFactor, 1);
+	std::thread blueThread(bicubicWork, bBuff, output, xSize, ySize, newXSize, newYSize, horizontalScalingFactor, vericalScalingFactor, 2);
+	redThread.join();
+	greenThread.join();
+	blueThread.join();
+
+	delete[]rBuff;
+	delete[]gBuff;
+	delete[]bBuff;
 }
 
 void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
