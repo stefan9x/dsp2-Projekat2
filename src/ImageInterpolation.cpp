@@ -17,11 +17,11 @@ void sampleAndHold(const uchar input[], int xSize, int ySize, uchar output[], in
 			int closestX = (x - 1) / horizontalScalingFactor + 1;
 			int closestY = (y - 1) / verticalScalingFactor + 1;
 
-			if (closestX == xSize) {
+			if (closestX >= xSize) {
 				closestX = (x - 1) / horizontalScalingFactor;
 			}
 
-			if (closestY == ySize) {
+			if (closestY >= ySize) {
 				closestY = (y - 1) / verticalScalingFactor;
 			}
 		
@@ -73,10 +73,8 @@ void bilinearInterpolate(const uchar input[], int xSize, int ySize, uchar output
 												   a * (1 - b) * input[n * xSize * 3 + m2 * 3 + 2] +
 											       (1 - a) * b * input[n2 * xSize * 3 + m * 3 + 2] +
 												    a * b * input[n2 * xSize * 3 + m2 * 3 + 2];
-
 		}
 	}
-
 }
 
 double calculateW(double value) {
@@ -187,14 +185,25 @@ void bicubicInterpolate(const uchar input[], int xSize, int ySize, uchar output[
 
 void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
 {
-	double theta = 3.14 * angle / 180;
+	double theta = (360-angle) * 3.141592 / 180;
 
 	for (int y = 0; y < ySize; y++)
 	{
 		for (int x = 0; x < xSize; x++)
 		{
-			int newPosY = round(y * cos(theta) + x * sin(theta) - m * sin(theta) - n * cos(theta) + n);
-			int newPosX = round(x * cos(theta) - y * sin(theta) - m * cos(theta) + n * sin(theta) + m);
+			double newPosY = y * cos(theta) + x * sin(theta) - m * sin(theta) - n * cos(theta) + n;
+			double newPosX = x * cos(theta) - y * sin(theta) - m * cos(theta) + n * sin(theta) + m;
+
+			int closestX = floor(newPosX);
+			int closestY = floor(newPosY);
+
+			if (closestX == xSize) {
+				closestX = floor(newPosX) - 1;
+			}
+
+			if (closestY == ySize) {
+				closestY = floor(newPosY) - 1;
+			}
 
 			if (newPosY < 0 || newPosY > ySize - 1 || newPosX < 0 || newPosX > xSize - 1) {
 				output[y * 3 * xSize + x * 3] = 0; //R
@@ -202,19 +211,17 @@ void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int 
 				output[y * 3 * xSize + x * 3 + 2] = 0; //B
 			}
 			else {
-				output[y * 3 * xSize + x * 3] = input[newPosY * 3 * xSize + newPosX * 3]; //R
-				output[y * 3 * xSize + x * 3 + 1] = input[newPosY * 3 * xSize + newPosX * 3 + 1]; //G
-				output[y * 3 * xSize + x * 3 + 2] = input[newPosY * 3 * xSize + newPosX * 3 + 2]; //B
+				output[y * 3 * xSize + x * 3] = input[closestY * 3 * xSize + closestX * 3]; //R
+				output[y * 3 * xSize + x * 3 + 1] = input[closestY * 3 * xSize + closestX * 3 + 1]; //G
+				output[y * 3 * xSize + x * 3 + 2] = input[closestY * 3 * xSize + closestX * 3 + 2]; //B
 			}
-
 		}
 	}
-
 }
 
 void imageRotateResize(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle, int newXSize, int newYSize)
 {
-	double theta = 3.14 * angle / 180;
+	double theta = angle * 3.141592 / 180;
 
 	int translateX = round((newXSize - xSize) / 2);
 	int translateY = round((newYSize - ySize) / 2);
@@ -232,12 +239,11 @@ void imageRotateResize(const uchar input[], int xSize, int ySize, uchar output[]
 
 		}
 	}
-
 }
 
 void imageRotateBilinear(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
 {
-	double theta = 3.14 * angle / 180;
+	double theta = (360 - angle) * 3.141592 / 180;
 
 	for (int y = 0; y < ySize; y++)
 	{
@@ -283,8 +289,6 @@ void imageRotateBilinear(const uchar input[], int xSize, int ySize, uchar output
 													(1 - a) * b * input[secondY * xSize * 3 + firstX * 3 + 2] +
 													a * b * input[secondY * xSize * 3 + secondX * 3 + 2];
 			}
-
 		}
 	}
-
 }
