@@ -237,11 +237,54 @@ void imageRotateResize(const uchar input[], int xSize, int ySize, uchar output[]
 
 void imageRotateBilinear(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
 {
-	uchar *tempBuff = new uchar [xSize * ySize * 3];
+	double theta = 3.14 * angle / 180;
 
-	imageRotate(input, xSize, ySize, tempBuff, m, n, angle);
-	bilinearInterpolate(tempBuff, xSize, ySize, output, xSize, ySize);
+	for (int y = 0; y < ySize; y++)
+	{
+		for (int x = 0; x < xSize; x++)
+		{
+			double newPosY = y * cos(theta) + x * sin(theta) - m * sin(theta) - n * cos(theta) + n;
+			double newPosX = x * cos(theta) - y * sin(theta) - m * cos(theta) + n * sin(theta) + m;
 
-	delete[]tempBuff;
+			double a = newPosX - floor(newPosX);
+			double b = newPosY - floor(newPosY);
+
+			int firstX = floor(newPosX);
+			int firstY = floor(newPosY);
+
+			int secondX = firstX + 1;
+
+			if (secondX == xSize) {
+				secondX = firstX;
+			}
+
+			int secondY = firstY + 1;
+
+			if (secondY == ySize) {
+				secondY = firstY;
+			}
+
+			if (newPosY < 0 || newPosY > ySize - 1 || newPosX < 0 || newPosX > xSize - 1) {
+				output[y * 3 * xSize + x * 3] = 0; //R
+				output[y * 3 * xSize + x * 3 + 1] = 0; //G
+				output[y * 3 * xSize + x * 3 + 2] = 0; //B
+			}
+			else {
+				output[y * 3 * xSize + x * 3] = (1 - a) * (1 - b) * input[firstY * xSize * 3 + firstX * 3] +
+												a * (1 - b) * input[firstY * xSize * 3 + secondX * 3] +
+												(1 - a) * b * input[secondY * xSize * 3 + firstX * 3] +
+												a * b * input[secondY * xSize * 3 + secondX * 3];
+				output[y * 3 * xSize + x * 3 + 1] = (1 - a) * (1 - b) * input[firstY * xSize * 3 + firstX * 3 + 1] +
+													a * (1 - b) * input[firstY * xSize * 3 + secondX * 3 + 1] +
+													(1 - a) * b * input[secondY * xSize * 3 + firstX * 3 + 1] +
+													a * b * input[secondY * xSize * 3 + secondX * 3 + 1];
+				output[y * 3 * xSize + x * 3 + 2] = (1 - a) * (1 - b) * input[firstY * xSize * 3 + firstX * 3 + 2] +
+													a * (1 - b) * input[firstY * xSize * 3 + secondX * 3 + 2] +
+													(1 - a) * b * input[secondY * xSize * 3 + firstX * 3 + 2] +
+													a * b * input[secondY * xSize * 3 + secondX * 3 + 2];
+			}
+
+		}
+	}
 
 }
