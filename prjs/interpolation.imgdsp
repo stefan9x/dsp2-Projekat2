@@ -25,6 +25,11 @@
 			    <param name="Angle:" min="0" current="0" max="360.0"/>
 			</params>
         </program>
+		<program name="Rotation With Resize">
+            <params>
+			    <param name="Angle:" min="0" current="0" max="360.0"/>
+			</params>
+        </program>
 		<program name="Rotation Bilinear">
             <params>
 			    <param name="Angle:" min="0" current="0" max="360.0"/>
@@ -40,7 +45,8 @@
 		<in_img file_name="tennis.bmp"/>
         <in_img file_name="playing_kitten.jpg"/>
 		<in_img file_name="pool.png"/>	
-		<in_img file_name="CatWithGreenEyes.png"/>	
+		<in_img file_name="CatWithGreenEyes.png"/>
+		<in_img file_name="lena_processed.jpg"/>		
     </in_imgs>
     <out_imgs>
         <out_img file_name="processed_img.jpg"/>

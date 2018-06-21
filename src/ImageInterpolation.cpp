@@ -182,7 +182,7 @@ void bicubicInterpolate(const uchar input[], int xSize, int ySize, uchar output[
 
 	delete[]rBuff;
 	delete[]gBuff;
-	delete[]bBuff;
+	delete[]bBuff;	
 }
 
 void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle)
@@ -206,6 +206,29 @@ void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int 
 				output[y * 3 * xSize + x * 3 + 1] = input[newPosY * 3 * xSize + newPosX * 3 + 1]; //G
 				output[y * 3 * xSize + x * 3 + 2] = input[newPosY * 3 * xSize + newPosX * 3 + 2]; //B
 			}
+
+		}
+	}
+
+}
+
+void imageRotateResize(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle, int newXSize, int newYSize)
+{
+	double theta = 3.14 * angle / 180;
+
+	int translateX = round((newXSize - xSize) / 2);
+	int translateY = round((newYSize - ySize) / 2);
+
+	for (int y = 0; y < ySize; y++)
+	{
+		for (int x = 0; x < xSize; x++)
+		{
+			int newPosY = round(y * cos(theta) + x * sin(theta) - m * sin(theta) - n * cos(theta) + n) + translateY;
+			int newPosX = round(x * cos(theta) - y * sin(theta) - m * cos(theta) + n * sin(theta) + m) + translateX;
+
+			output[newPosY * 3 * newXSize + newPosX * 3] = input[y * 3 * xSize + x * 3]; //R
+			output[newPosY * 3 * newXSize + newPosX * 3 + 1] = input[y * 3 * xSize + x * 3 + 1]; //G
+			output[newPosY * 3 * newXSize + newPosX * 3 + 2] = input[y * 3 * xSize + x * 3 + 2]; //B
 
 		}
 	}

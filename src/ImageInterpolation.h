@@ -20,6 +20,8 @@ void bicubicInterpolate(const uchar input[], int xSize, int ySize, uchar output[
 
 void imageRotate(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle);
 
+void imageRotateResize(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle, int newXSize, int newYSize);
+
 void imageRotateBilinear(const uchar input[], int xSize, int ySize, uchar output[], int m, int n, double angle);
 
 #endif // IMAGEINTERPOLATION_H_
