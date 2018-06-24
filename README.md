@@ -1,3 +1,3 @@
-# ImageDSP
+# OAiS DSP 2 - Projekat 2
 
-Application for practising methods for image processing digital signal processing.
+Image interpolation (Sample and Hold, Bilinear, Bicubic, Rotate, Rotate Bilinear)
